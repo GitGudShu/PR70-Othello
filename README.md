@@ -23,6 +23,6 @@ Enjoy the game!
 
 ## Technologies
 
-- **Java**: Core programming language for the game's logic and graphical interface.
+- **Java (version 23.0.1)**: Core programming language for the game's logic and graphical interface.
 - **Swing**: Java's graphical user interface (GUI) toolkit for rendering the game board and handling user interactions.
 - **File I/O**: Used to save and load game progress.
