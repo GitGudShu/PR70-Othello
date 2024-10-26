@@ -182,5 +182,36 @@ public class Board extends JPanel {
             }
         }
     }
+
+    // ########################## Save Manager methods ################################# //
+
+    // Retrieve the loaded game state
+    public GameStatus getGameState() {
+        int[][] gridState = new int[gridSize][gridSize];
+        for (int row = 0; row < gridSize; row++) {
+            for (int col = 0; col < gridSize; col++) {
+                gridState[row][col] = grid.getCellState(row, col);
+            }
+        }
+        int whiteScore = grid.getPlayerScore(1);
+        int blackScore = grid.getPlayerScore(2);
+
+        return new GameStatus("CurrentSave", currentPlayer, gridState, whiteScore, blackScore);
+    }
+
+    // Method to load a saved game state
+    public void loadGameState(GameStatus gameState) {
+        currentPlayer = gameState.getCurrentPlayer();
+        int[][] gridData = gameState.getGrid();
+
+        for (int row = 0; row < gridSize; row++) {
+            for (int col = 0; col < gridSize; col++) {
+                grid.setCellState(row, col, gridData[row][col]);
+            }
+        }
+
+        updateBoard();
+        displayValidMoves(); 
+    }
     
 }
