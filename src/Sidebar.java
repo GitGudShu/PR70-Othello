@@ -1,15 +1,22 @@
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 
 public class Sidebar extends JPanel {
     private final JFrame parentFrame;
     private final Board board;
+    private BufferedImage backgroundImage;
 
     public Sidebar(JFrame parentFrame, Board board) {
         this.parentFrame = parentFrame;
         this.board = board;
 
-        setBackground(Color.white);
+        ensurePublicExists();
+        loadBackgroundImage();
+
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridwidth = GridBagConstraints.REMAINDER;
@@ -68,6 +75,34 @@ public class Sidebar extends JPanel {
 
         if (confirm == JOptionPane.YES_OPTION) {
             board.resetGame();
+        }
+    }
+
+    // Helper method to ensure the public directory exists
+    private void ensurePublicExists() {
+        File publicDir = new File("public");
+        if (!publicDir.exists()) {
+            publicDir.mkdir();
+        }
+    }
+
+    private void loadBackgroundImage() {
+        try {
+            File imageFile = new File("public/sb_background.jpg");
+            if (imageFile.exists()) {
+                backgroundImage = ImageIO.read(imageFile);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+
+        if (backgroundImage != null) {
+            g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
         }
     }
 }

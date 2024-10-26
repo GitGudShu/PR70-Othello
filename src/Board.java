@@ -21,7 +21,7 @@ public class Board extends JPanel {
         this.grid = new Grid();
         this.ai = new AI(2); // AI is black
         setLayout(new GridLayout(gridSize, gridSize, 0, 0));
-        setBorder(BorderFactory.createMatteBorder(15, 15, 15, 15, new Color(139, 69, 19)));
+        setBorder(BorderFactory.createMatteBorder(15, 15, 15, 15, new Color(30, 30, 30)));
 
         initializeBoard();
         displayValidMoves();
