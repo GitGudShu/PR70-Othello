@@ -22,6 +22,7 @@ public class Sidebar extends JPanel {
 
         saveButton.addActionListener(e -> handleSaveGame());
         loadButton.addActionListener(e -> handleLoadGame());
+        resetButton.addActionListener(e -> handleResetGame());
 
         add(saveButton, gbc);
         add(resetButton, gbc);
@@ -41,16 +42,32 @@ public class Sidebar extends JPanel {
         }
     }
 
+
     private void handleLoadGame() {
-        // Ask the user to select a file to load
-        String fileName = JOptionPane.showInputDialog(parentFrame, "Enter the save file name to load:", "Load Game", JOptionPane.PLAIN_MESSAGE);
-        if (fileName != null && !fileName.trim().isEmpty()) {
-            GameStatus loadedState = SaveManager.loadGame(fileName + ".xml");
+        LoadManagerWindow loadWindow = new LoadManagerWindow(parentFrame);
+        loadWindow.setVisible(true);
+
+        String selectedSaveFile = loadWindow.getSelectedSaveFile();
+        if (selectedSaveFile != null && !selectedSaveFile.trim().isEmpty()) {
+            GameStatus loadedState = SaveManager.loadGame(selectedSaveFile);
             if (loadedState != null) {
-                board.loadGameState(loadedState); // Load the game state into the board
+                board.loadGameState(loadedState);
             } else {
                 JOptionPane.showMessageDialog(parentFrame, "Failed to load the game.", "Error", JOptionPane.ERROR_MESSAGE);
             }
+        }
+    }
+
+    private void handleResetGame() {
+        int confirm = JOptionPane.showConfirmDialog(
+            parentFrame,
+            "Are you sure you want to reset the game?",
+            "Reset Game",
+            JOptionPane.YES_NO_OPTION
+        );
+
+        if (confirm == JOptionPane.YES_OPTION) {
+            board.resetGame();
         }
     }
 }

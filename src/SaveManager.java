@@ -9,6 +9,9 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SaveManager {
 
@@ -109,5 +112,22 @@ public class SaveManager {
             sb.append(value).append(" ");
         }
         return sb.toString().trim();
+    }
+
+    public static List<String> getAvailableSaves() {
+
+        List<String> saveList = new ArrayList<>();
+        File saveDir = new File(SAVE_DIRECTORY);
+        File[] files = saveDir.listFiles((dir, name) -> name.toLowerCase().endsWith(".xml"));
+
+        if (files != null) {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            for (File file : files) {
+                String fileName = file.getName();
+                String lastModified = sdf.format(file.lastModified());
+                saveList.add(fileName + " (Saved on: " + lastModified + ")");
+            }
+        }
+        return saveList;
     }
 }

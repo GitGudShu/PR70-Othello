@@ -95,7 +95,7 @@ public class Board extends JPanel {
     }
     
 
-    private void resetGame() {
+    protected void resetGame() {
         grid.reset();
         currentPlayer = 1;
         gameState = GameState.IN_PROGRESS;
