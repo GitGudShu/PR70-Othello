@@ -31,7 +31,7 @@ public class Grid {
         // Iterate over all cells to find valid moves
         for (int row = 0; row < gridSize; row++) {
             for (int col = 0; col < gridSize; col++) {
-                if (cells[row][col].getState() == 0 && isValidMove(new Position(row, col), player, opponent)) {
+                if (cells[row][col].getState() == 0 && isValidMove(row, col, player, opponent)) {
                     validMoves.add(new Position(row, col));
                 }
             }
@@ -39,9 +39,36 @@ public class Grid {
         return validMoves;
     }
 
-    public boolean isValidMove(Position position, int player, int opponent) {
-        // Logic to validate moves will go here
-        return true; // Simplified for now
+    private boolean isValidMove(int row, int col, int player, int opponent) {
+        for (Direction direction : Direction.values()) {
+            if (checkDirection(row, col, direction, player, opponent)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean checkDirection(int row, int col, Direction direction, int player, int opponent) {
+        int currentRow = row + direction.getRowDelta();
+        int currentCol = col + direction.getColDelta();
+        boolean foundOpponent = false;
+
+        while (isInBounds(currentRow, currentCol) && cells[currentRow][currentCol].getState() == opponent) {
+            foundOpponent = true;
+            currentRow += direction.getRowDelta();
+            currentCol += direction.getColDelta();
+        }
+
+        if (foundOpponent && isInBounds(currentRow, currentCol) && cells[currentRow][currentCol].getState() == player) {
+            return true;
+        }
+
+        return false;
+    }
+
+    // Helper method to check if a position is within bounds, necessary to avoid ArrayIndexOutOfBoundsException
+    private boolean isInBounds(int row, int col) {
+        return row >= 0 && row < gridSize && col >= 0 && col < gridSize;
     }
 
     public int getCellState(int row, int col) {
