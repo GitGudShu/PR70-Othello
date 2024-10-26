@@ -8,6 +8,15 @@ public class Board extends JPanel {
     private final AI ai;
     private int currentPlayer = 1; // 1 = white, 2 = black
 
+    private enum GameState { 
+        IN_PROGRESS, 
+        WIN,
+        LOSS,
+        DRAW
+    }
+
+    private GameState gameState = GameState.IN_PROGRESS;
+
     public Board() {
         this.grid = new Grid();
         this.ai = new AI(2); // AI is black
@@ -32,6 +41,47 @@ public class Board extends JPanel {
         }
     }
 
+
+    private void updateGameState() {
+        if (isGameOver()) {
+            int playerScore = grid.getPlayerScore(1); // White
+            int aiScore = grid.getPlayerScore(2); // Black
+
+            if (playerScore > aiScore) {
+                gameState = GameState.WIN;
+            } else if (playerScore < aiScore) {
+                gameState = GameState.LOSS;
+            } else {
+                gameState = GameState.DRAW;
+            }
+
+            showGameResult();
+        }
+    }
+
+    private boolean isGameOver() {
+        return grid.getValidMoves(1).isEmpty() && grid.getValidMoves(2).isEmpty();
+    }
+
+    private void showGameResult() {
+        String message;
+        switch (gameState) {
+            case WIN:
+                message = "Congratulations! You win!";
+                break;
+            case LOSS:
+                message = "You lost! Better luck next time!";
+                break;
+            case DRAW:
+                message = "It's a draw!";
+                break;
+            default:
+                message = "Game in progress...";
+        }
+        JOptionPane.showMessageDialog(this, message, "Game Over", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    // ########################## Player Moves ################################# //
     private void displayValidMoves() {
         List<Position> validMoves = grid.getValidMoves(currentPlayer);
         for (Position pos : validMoves) {
@@ -41,30 +91,43 @@ public class Board extends JPanel {
     }
 
     private void handlePlayerMove(Cell cell) {
-        if (currentPlayer == 1 && cell.getState() == 0) { // Player's turn (White)
-            grid.setCellState(cell.getPosition().getRow(), cell.getPosition().getCol(), currentPlayer);
-            updateBoard();
-            switchTurn();
+        if (currentPlayer == 1 && cell.getState() == 0) {
+            Position pos = cell.getPosition();
+            if (grid.isValidMove(pos.getRow(), pos.getCol(), currentPlayer, 2)) {
+                grid.placePawnAndFlip(pos, currentPlayer);
+                updateBoard();
+                updateGameState(); // Check if game is over after player move
+                if (gameState == GameState.IN_PROGRESS) {
+                    switchTurn();
+                }
+            }
         }
     }
+    
 
     private void switchTurn() {
         currentPlayer = (currentPlayer == 1) ? 2 : 1;
 
-        if (currentPlayer == 2) { // AI's turn
+        if (currentPlayer == 2) { // computer's turn
             handleAIMove();
         } else {
-            displayValidMoves(); // Player's turn, show valid moves
+            displayValidMoves();
         }
     }
 
     private void handleAIMove() {
-        Position aiMove = ai.getMove(grid);
-        if (aiMove != null) {
-            grid.setCellState(aiMove.getRow(), aiMove.getCol(), 2); // AI plays as Black
-            updateBoard();
-        }
-        switchTurn(); // Switch back to the player
+        // Delay AI move by 2 seconds
+        Timer timer = new Timer(2000, e -> {
+            Position aiMove = ai.getMove(grid);
+            if (aiMove != null && grid.isValidMove(aiMove.getRow(), aiMove.getCol(), currentPlayer, 1)) {
+                grid.placePawnAndFlip(aiMove, currentPlayer);
+                updateBoard();
+                updateGameState(); // Check if game is over after AI move
+            }
+            switchTurn();
+        });
+        timer.setRepeats(false); // This makes sure the timer only runs once
+        timer.start();
     }
 
     private void updateBoard() {
@@ -72,7 +135,9 @@ public class Board extends JPanel {
             for (int col = 0; col < gridSize; col++) {
                 Cell cell = grid.getCell(new Position(row, col));
                 cell.setState(grid.getCellState(row, col));
+                cell.showHint(false); // Reset hint display
             }
         }
     }
+    
 }

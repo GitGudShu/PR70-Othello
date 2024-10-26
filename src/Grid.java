@@ -23,29 +23,65 @@ public class Grid {
         cells[4][3].setState(2);
     }
 
-
     public List<Position> getValidMoves(int player) {
         List<Position> validMoves = new ArrayList<>();
         int opponent = (player == 1) ? 2 : 1;
 
-        // Iterate over all cells to find valid moves
+        // System.out.println("Getting valid moves for player " + player);
+
         for (int row = 0; row < gridSize; row++) {
             for (int col = 0; col < gridSize; col++) {
                 if (cells[row][col].getState() == 0 && isValidMove(row, col, player, opponent)) {
                     validMoves.add(new Position(row, col));
+                    // System.out.println("Valid move found at: (" + row + ", " + col + ")");
                 }
             }
         }
+
         return validMoves;
     }
 
-    private boolean isValidMove(int row, int col, int player, int opponent) {
+    public boolean isValidMove(int row, int col, int player, int opponent) {
+        boolean valid = false;
         for (Direction direction : Direction.values()) {
             if (checkDirection(row, col, direction, player, opponent)) {
-                return true;
+                // System.out.println("Valid direction found for move at (" + row + ", " + col + ") in direction: " + direction);
+                valid = true;
             }
         }
-        return false;
+        return valid;
+    }
+
+    public void placePawnAndFlip(Position pos, int player) {
+        int row = pos.getRow();
+        int col = pos.getCol();
+        cells[row][col].setState(player);
+        // System.out.println("Placing pawn for player " + player + " at (" + row + ", " + col + ")");
+        flipPawns(row, col, player);
+    }
+
+    private void flipPawns(int row, int col, int player) {
+        int opponent = (player == 1) ? 2 : 1;
+        for (Direction direction : Direction.values()) {
+            if (checkDirection(row, col, direction, player, opponent)) {
+                // System.out.println("Flipping direction: " + direction + " for player " + player + " starting at (" + row + ", " + col + ")");
+                flipDirection(row, col, direction, player, opponent);
+            }
+        }
+    }
+
+    private void flipDirection(int row, int col, Direction direction, int player, int opponent) {
+        int dRow = direction.getRowDelta();
+        int dCol = direction.getColDelta();
+        int currentRow = row + dRow;
+        int currentCol = col + dCol;
+
+        while (isInBounds(currentRow, currentCol) && cells[currentRow][currentCol].getState() == opponent) {
+            // System.out.println("Flipping cell at (" + currentRow + ", " + currentCol + ") to player " + player);
+            cells[currentRow][currentCol].setState(player);
+            currentRow += dRow;
+            currentCol += dCol;
+        }
     }
 
     private boolean checkDirection(int row, int col, Direction direction, int player, int opponent) {
@@ -66,7 +102,6 @@ public class Grid {
         return false;
     }
 
-    // Helper method to check if a position is within bounds, necessary to avoid ArrayIndexOutOfBoundsException
     private boolean isInBounds(int row, int col) {
         return row >= 0 && row < gridSize && col >= 0 && col < gridSize;
     }
@@ -83,6 +118,19 @@ public class Grid {
 
     public Cell getCell(Position pos) {
         return cells[pos.getRow()][pos.getCol()];
+    }
+
+
+    public int getPlayerScore(int player) {
+        int score = 0;
+        for (int row = 0; row < gridSize; row++) {
+            for (int col = 0; col < gridSize; col++) {
+                if (cells[row][col].getState() == player) {
+                    score++;
+                }
+            }
+        }
+        return score;
     }
 
 }
