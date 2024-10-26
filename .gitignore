@@ -93,5 +93,4 @@ nb-configuration.xml
 ## Custom
 ##############################
 backup/
-saves/*
-!saves/
+saves/

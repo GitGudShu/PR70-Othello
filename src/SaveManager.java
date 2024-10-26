@@ -19,6 +19,8 @@ public class SaveManager {
 
     // Save the game state to an XML file
     public static void saveGame(GameStatus gameState, String fileName) {
+        ensureSaveDirectoryExists(); // ensure the save directory exists
+        
         try {
             DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
@@ -73,6 +75,8 @@ public class SaveManager {
     }
 
     public static GameStatus loadGame(String fileName) {
+        ensureSaveDirectoryExists(); // ensure the save directory exists
+
         try {
             String t_fileName = SAVE_DIRECTORY + "/" + fileName;
             File xmlFile = new File(t_fileName);
@@ -129,5 +133,13 @@ public class SaveManager {
             }
         }
         return saveList;
+    }
+
+    // Helper method to ensure 'saves' directory exists
+    private static void ensureSaveDirectoryExists() {
+        File saveDir = new File(SAVE_DIRECTORY);
+        if (!saveDir.exists()) {
+            saveDir.mkdir();
+        }
     }
 }
