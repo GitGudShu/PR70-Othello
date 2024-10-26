@@ -1,3 +1,6 @@
+import java.util.ArrayList;
+import java.util.List;
+
 public class Grid {
     private final int gridSize = 8;
     private final Cell[][] cells;
@@ -7,7 +10,6 @@ public class Grid {
         initializeBoard();
     }
 
-    // Initializes the board with the starting position
     private void initializeBoard() {
         for (int row = 0; row < gridSize; row++) {
             for (int col = 0; col < gridSize; col++) {
@@ -15,11 +17,31 @@ public class Grid {
             }
         }
 
-        // Initial Othello starting positions
         cells[3][3].setState(1);
         cells[4][4].setState(1);
         cells[3][4].setState(2);
         cells[4][3].setState(2);
+    }
+
+
+    public List<Position> getValidMoves(int player) {
+        List<Position> validMoves = new ArrayList<>();
+        int opponent = (player == 1) ? 2 : 1;
+
+        // Iterate over all cells to find valid moves
+        for (int row = 0; row < gridSize; row++) {
+            for (int col = 0; col < gridSize; col++) {
+                if (cells[row][col].getState() == 0 && isValidMove(new Position(row, col), player, opponent)) {
+                    validMoves.add(new Position(row, col));
+                }
+            }
+        }
+        return validMoves;
+    }
+
+    public boolean isValidMove(Position position, int player, int opponent) {
+        // Logic to validate moves will go here
+        return true; // Simplified for now
     }
 
     public int getCellState(int row, int col) {
@@ -36,8 +58,4 @@ public class Grid {
         return cells[pos.getRow()][pos.getCol()];
     }
 
-    public boolean isValidMove(Position pos, int player) {
-        // Logic to validate moves will go here
-        return true; // Simplified for now
-    }
 }
