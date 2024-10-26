@@ -133,4 +133,18 @@ public class Grid {
         return score;
     }
 
+    public void reset() {
+        for (int row = 0; row < gridSize; row++) {
+            for (int col = 0; col < gridSize; col++) {
+                cells[row][col].setState(0); // Reset all cells to empty
+            }
+        }
+    
+        // Reinitialize the starting positions
+        cells[3][3].setState(1);
+        cells[4][4].setState(1);
+        cells[3][4].setState(2);
+        cells[4][3].setState(2);
+    }
+    
 }

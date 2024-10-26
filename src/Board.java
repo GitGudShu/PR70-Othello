@@ -78,7 +78,29 @@ public class Board extends JPanel {
             default:
                 message = "Game in progress...";
         }
-        JOptionPane.showMessageDialog(this, message, "Game Over", JOptionPane.INFORMATION_MESSAGE);
+    
+        int choice = JOptionPane.showConfirmDialog(
+            this,
+            message + "\nDo you want to play again?",
+            "Game Over",
+            JOptionPane.YES_NO_OPTION,
+            JOptionPane.INFORMATION_MESSAGE
+        );
+    
+        if (choice == JOptionPane.YES_OPTION) {
+            resetGame(); 
+        } else {
+            System.exit(0); // Exit the game if user chooses not to play again
+        }
+    }
+    
+
+    private void resetGame() {
+        grid.reset();
+        currentPlayer = 1;
+        gameState = GameState.IN_PROGRESS;
+        updateBoard();
+        displayValidMoves();
     }
 
     // ########################## Player Moves ################################# //
@@ -107,13 +129,34 @@ public class Board extends JPanel {
 
     private void switchTurn() {
         currentPlayer = (currentPlayer == 1) ? 2 : 1;
-
-        if (currentPlayer == 2) { // computer's turn
-            handleAIMove();
+    
+        List<Position> validMoves = grid.getValidMoves(currentPlayer);
+        if (validMoves.isEmpty()) {
+            // No valid moves available
+            String message = (currentPlayer == 1)
+                    ? "White has no valid moves! Passing turn to Black."
+                    : "Black has no valid moves! Passing turn to White.";
+            JOptionPane.showMessageDialog(this, message, "Turn Skipped", JOptionPane.INFORMATION_MESSAGE);
+    
+            currentPlayer = (currentPlayer == 1) ? 2 : 1;
+    
+            if (grid.getValidMoves(currentPlayer).isEmpty()) {
+                updateGameState(); 
+            } else if (currentPlayer == 2) {
+                handleAIMove();
+            } else {
+                displayValidMoves(); // Show valid moves only for human player
+            }
         } else {
-            displayValidMoves();
+            if (currentPlayer == 1) {
+                displayValidMoves(); 
+            } else {
+                handleAIMove(); // TODO: I had a problem where the AI got stuck if given an extra turn, this is difficult to recreate but this line should fix it, to test
+            }
         }
     }
+    
+    
 
     private void handleAIMove() {
         // Delay AI move by 2 seconds
