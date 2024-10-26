@@ -3,17 +3,22 @@ import java.awt.*;
 
 public class Board extends JPanel {
     private final int gridSize = 8;
-    private final Color boardColor = new Color(0, 128, 0);
+    private final Grid grid;
 
     public Board() {
-        setLayout(new GridLayout(gridSize, gridSize));
+        this.grid = new Grid();
+        setLayout(new GridLayout(gridSize, gridSize, 0, 0));
         setBorder(BorderFactory.createMatteBorder(15, 15, 15, 15, new Color(139, 69, 19)));
 
-        for (int i = 0; i < gridSize * gridSize; i++) {
-            JPanel cell = new JPanel();
-            cell.setBackground(boardColor);
-            cell.setBorder(BorderFactory.createLineBorder(Color.WHITE, 1));
-            add(cell);
+        initializeBoard();
+    }
+
+    private void initializeBoard() {
+        for (int row = 0; row < gridSize; row++) {
+            for (int col = 0; col < gridSize; col++) {
+                Cell cell = grid.getCell(new Position(row, col));
+                add(cell);
+            }
         }
     }
 }
