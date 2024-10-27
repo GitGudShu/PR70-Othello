@@ -1,4 +1,4 @@
-## **Othello (Reversi) Game - Object-Oriented Java Project**
+## **Othello (Reversi) Game
 
 ### **Project Overview**
 This project is a fully functional Othello (Reversi) game developed using Java, with a strong focus on Object-Oriented Programming (OOP) principles. The goal is to create a well-structured and maintainable codebase that demonstrates clean design, encapsulation, polymorphism, and effective use of Java’s built-in libraries like Swing for the graphical user interface.
