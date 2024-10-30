@@ -1,7 +1,7 @@
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.List;
 
 public class LoadManagerWindow extends JDialog {
@@ -9,37 +9,45 @@ public class LoadManagerWindow extends JDialog {
 
     public LoadManagerWindow(JFrame parent) {
         super(parent, "Load Game", true);
-
-        JPanel panel = new JPanel(new BorderLayout());
-        JLabel label = new JLabel("Select a save to load:");
+        getContentPane().setBackground(new Color(30, 30, 30));
+        
+        JPanel panel = new JPanel(new BorderLayout(0, 15));
+        panel.setBackground(new Color(30, 30, 30));
+        panel.setBorder(new EmptyBorder(20, 20, 20, 20));
+        
+        JLabel label = new JLabel("Select a save to load :");
+        label.setForeground(Color.WHITE);
+        label.setHorizontalAlignment(SwingConstants.CENTER);
+        label.setFont(new Font("Helvetica", Font.BOLD, 16));
         panel.add(label, BorderLayout.NORTH);
 
-        // Get available saves
         List<String> saves = SaveManager.getAvailableSaves();
         DefaultListModel<String> listModel = new DefaultListModel<>();
-        for (String save : saves) {
-            listModel.addElement(save);
-        }
-
+        saves.forEach(listModel::addElement);
+        
         JList<String> saveList = new JList<>(listModel);
+        saveList.setBackground(new Color(50, 50, 50));
+        saveList.setForeground(Color.WHITE);
+
+        
+        saveList.setFont(new Font("Helvetica", Font.PLAIN, 14));
         JScrollPane scrollPane = new JScrollPane(saveList);
+        scrollPane.setBorder(BorderFactory.createEmptyBorder());
         panel.add(scrollPane, BorderLayout.CENTER);
 
-        // Load and cancel buttons
         JPanel buttonPanel = new JPanel();
-        JButton loadButton = new JButton("Load");
-        JButton cancelButton = new JButton("Cancel");
+        buttonPanel.setOpaque(false);
+        CustomButton loadButton = new CustomButton("Load", CustomButton.ButtonType.GREEN);
+        CustomButton cancelButton = new CustomButton("Cancel", CustomButton.ButtonType.DARK_GRAY);
+        
         buttonPanel.add(loadButton);
         buttonPanel.add(cancelButton);
         panel.add(buttonPanel, BorderLayout.SOUTH);
 
-        loadButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                if (!saveList.isSelectionEmpty()) {
-                    String selectedValue = saveList.getSelectedValue();
-                    selectedSaveFile = selectedValue.split(" ")[0]; // Extract file name without extension
-                    dispose();
-                }
+        loadButton.addActionListener((ActionEvent e) -> {
+            if (!saveList.isSelectionEmpty()) {
+                selectedSaveFile = saveList.getSelectedValue().split(" ")[0];
+                dispose();
             }
         });
 

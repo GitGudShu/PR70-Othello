@@ -5,6 +5,9 @@ public class Cell extends JPanel {
     private int state; // 0 = empty, 1 = white, 2 = black
     private boolean showHint; // Do we show valid moves ?
     private Position position;
+    private Image whiteDisc; // Image pour le disque blanc
+    private Image blackDisc; // Image pour le disque noir
+    private Image hintDisc; // Image pour l'indication
 
     public Cell(int row, int col) {
         this.position = new Position(row, col);
@@ -12,6 +15,9 @@ public class Cell extends JPanel {
         this.showHint = false;
         setBackground(new Color(0, 128, 0));
         setBorder(BorderFactory.createLineBorder(Color.WHITE, 1));
+        whiteDisc = new ImageIcon("public/blanc.png").getImage(); // Assurez-vous que le chemin est correct
+        blackDisc = new ImageIcon("public/noir.png").getImage(); // Assurez-vous que le chemin est correct
+        hintDisc = new ImageIcon("public/jaune.png").getImage(); // Assurez-vous que le chemin est correct
     }
 
     public void setState(int state) {
@@ -33,22 +39,20 @@ public class Cell extends JPanel {
         repaint();
     }
 
+
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
         if (state == 1) {
-            g.setColor(Color.WHITE);
-            g.fillOval(5, 5, getWidth() - 10, getHeight() - 10);
+            g.drawImage(whiteDisc, 5, 5, getWidth() - 10, getHeight() - 10, this);
         } else if (state == 2) {
-            g.setColor(Color.BLACK);
-            g.fillOval(5, 5, getWidth() - 10, getHeight() - 10);
+            g.drawImage(blackDisc, 5, 5, getWidth() - 10, getHeight() - 10, this);
         }
 
-        // Display hint if applicable
         if (showHint && state == 0) {
-            g.setColor(Color.YELLOW);
-            g.fillOval(15, 15, getWidth() - 30, getHeight() - 30);
+            g.drawImage(hintDisc,5, 5, getWidth() - 10, getHeight() - 10, this);
         }
     }
+
 }

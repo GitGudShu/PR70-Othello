@@ -20,7 +20,8 @@ public class SaveManager {
     // Save the game state to an XML file
     public static void saveGame(GameStatus gameState, String fileName) {
         ensureSaveDirectoryExists(); // ensure the save directory exists
-        
+
+        fileName = fileName.replace(" ", "_");        
         try {
             DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
@@ -63,7 +64,7 @@ public class SaveManager {
             TransformerFactory transformerFactory = TransformerFactory.newInstance();
             Transformer transformer = transformerFactory.newTransformer();
             DOMSource source = new DOMSource(doc);
-            String t_fileName = SAVE_DIRECTORY + "/" + fileName;
+            String t_fileName = new File(SAVE_DIRECTORY, fileName).getPath();
             StreamResult result = new StreamResult(new File(t_fileName));
 
             transformer.transform(source, result);
@@ -78,6 +79,7 @@ public class SaveManager {
         ensureSaveDirectoryExists(); // ensure the save directory exists
 
         try {
+            
             String t_fileName = SAVE_DIRECTORY + "/" + fileName;
             File xmlFile = new File(t_fileName);
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();

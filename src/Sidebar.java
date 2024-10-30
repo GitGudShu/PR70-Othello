@@ -1,5 +1,6 @@
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -17,23 +18,42 @@ public class Sidebar extends JPanel {
         ensurePublicExists();
         loadBackgroundImage();
 
-        setLayout(new GridBagLayout());
+        setLayout(new BorderLayout()); // Utilisation de BorderLayout pour la disposition générale
+
+        // Panneau pour les boutons
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setLayout(new GridBagLayout());
+        buttonPanel.setOpaque(false); // Garder le panneau transparent pour voir le fond d'écran
+
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.gridwidth = GridBagConstraints.REMAINDER;
+        gbc.gridwidth = GridBagConstraints.REMAINDER; // Panneau de boutons à la ligne
         gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.insets = new Insets(10, 20, 10, 20);
+        gbc.insets = new Insets(5, 20, 5, 20); // Espacement des boutons
 
-        JButton saveButton = new JButton("Save Game");
-        JButton resetButton = new JButton("Reset Game");
-        JButton loadButton = new JButton("Load Game");
+        // Création des boutons avec CustomButton
+        CustomButton saveButton = new CustomButton("Save Game", CustomButton.ButtonType.GREEN);
+        CustomButton resetButton = new CustomButton("Reset Game", CustomButton.ButtonType.DARK_GRAY);
+        CustomButton loadButton = new CustomButton("Load Game", CustomButton.ButtonType.GREEN);
+        CustomButton mainMenuButton = new CustomButton("Main Menu", CustomButton.ButtonType.DARK_GRAY);
 
+        // Actions des boutons
         saveButton.addActionListener(e -> handleSaveGame());
         loadButton.addActionListener(e -> handleLoadGame());
         resetButton.addActionListener(e -> handleResetGame());
+        mainMenuButton.addActionListener(e -> {
+            MainMenu menu = new MainMenu(); // Créez une nouvelle instance du menu principal
+            menu.setVisible(true); // Affiche le menu principal
+            parentFrame.dispose(); // Ferme la fenêtre actuelle (facultatif)
+        });
 
-        add(saveButton, gbc);
-        add(resetButton, gbc);
-        add(loadButton, gbc);
+        // Ajout des boutons au panneau
+        buttonPanel.add(saveButton, gbc);
+        buttonPanel.add(resetButton, gbc);
+        buttonPanel.add(loadButton, gbc);
+        buttonPanel.add(mainMenuButton, gbc);
+
+        // Ajout du panneau de boutons au panneau principal
+        add(buttonPanel, BorderLayout.CENTER);
     }
 
     private void handleSaveGame() {
@@ -48,7 +68,6 @@ public class Sidebar extends JPanel {
             }
         }
     }
-
 
     private void handleLoadGame() {
         LoadManagerWindow loadWindow = new LoadManagerWindow(parentFrame);
@@ -66,16 +85,40 @@ public class Sidebar extends JPanel {
     }
 
     private void handleResetGame() {
-        int confirm = JOptionPane.showConfirmDialog(
-            parentFrame,
-            "Are you sure you want to reset the game?",
-            "Reset Game",
-            JOptionPane.YES_NO_OPTION
-        );
+        JDialog confirmDialog = new JDialog(parentFrame, "Reset Game", true);
+        confirmDialog.setSize(400, 160);
+        confirmDialog.setLayout(new BorderLayout());
+        confirmDialog.getContentPane().setBackground(new Color(30, 30, 30));
+        confirmDialog.setLocationRelativeTo(parentFrame);
 
-        if (confirm == JOptionPane.YES_OPTION) {
+        JPanel panel = new JPanel(new BorderLayout(0, 15));
+        panel.setBorder(new EmptyBorder(20, 20, 20, 20));
+        panel.setBackground(new Color(30, 30, 30));
+
+        JLabel label = new JLabel("Are you sure you want to reset the game ?");
+        label.setForeground(Color.WHITE);
+        label.setHorizontalAlignment(SwingConstants.CENTER);
+        label.setFont(new Font("Helvetica", Font.BOLD, 16));
+        panel.add(label, BorderLayout.CENTER);
+
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setOpaque(false);
+        CustomButton yesButton = new CustomButton("Yes", CustomButton.ButtonType.GREEN);
+        CustomButton noButton = new CustomButton("No", CustomButton.ButtonType.DARK_GRAY);
+        buttonPanel.add(yesButton);
+        buttonPanel.add(noButton);
+        
+        panel.add(buttonPanel, BorderLayout.SOUTH);
+        confirmDialog.getContentPane().add(panel);
+
+        yesButton.addActionListener(e -> {
             board.resetGame();
-        }
+            confirmDialog.dispose();
+        });
+
+        noButton.addActionListener(e -> confirmDialog.dispose());
+
+        confirmDialog.setVisible(true);
     }
 
     // Helper method to ensure the public directory exists
