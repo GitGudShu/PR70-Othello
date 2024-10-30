@@ -77,51 +77,50 @@ public class MainMenu extends JFrame {
         JPanel footerPanel = new JPanel();
         footerPanel.setBackground(new Color(20, 20, 20)); // Fond gris foncé pour le footer
 
-footerPanel.setLayout(new BoxLayout(footerPanel, BoxLayout.Y_AXIS)); // Alignement vertical
+        footerPanel.setLayout(new BoxLayout(footerPanel, BoxLayout.Y_AXIS)); // Alignement vertical
 
-// Texte du footer
-String footerText1 = "<html><span style='color:white;'>Created by</span></html>";
-String footerText2 = "<html><span style='color:white;'>" +
-    "<a href='https://github.com/BilelBOUHEDDA' style='color:white; text-decoration:none;'>Bilel BOUHEDDA</a></span></html>";
-String footerText3 = "<html><span style='color:white;'>" +
-    "<a href='https://github.com/GitGudShu' style='color:white; text-decoration:none;'>Thomas CHU</a></span></html>";
+        // Texte du footer
+        String footerText1 = "<html><span style='color:white;'>Created by</span></html>";
+        String footerText2 = "<html><span style='color:white;'>" +
+            "<a href='https://github.com/BilelBOUHEDDA' style='color:white; text-decoration:none;'>Bilel BOUHEDDA</a></span></html>";
+        String footerText3 = "<html><span style='color:white;'>" +
+            "<a href='https://github.com/GitGudShu' style='color:white; text-decoration:none;'>Thomas CHU</a></span></html>";
 
-// Ajouter les JLabel pour chaque texte
-JLabel footerLabel1 = new JLabel(footerText1);
-footerLabel1.setAlignmentX(Component.LEFT_ALIGNMENT);
-footerLabel1.setHorizontalAlignment(SwingConstants.LEFT);
+        // Ajouter les JLabel pour chaque texte
+        JLabel footerLabel1 = new JLabel(footerText1);
+        footerLabel1.setAlignmentX(Component.LEFT_ALIGNMENT);
+        footerLabel1.setHorizontalAlignment(SwingConstants.LEFT);
 
-JLabel footerLabel2 = new JLabel(footerText2);
-footerLabel2.setAlignmentX(Component.LEFT_ALIGNMENT);
-footerLabel2.setHorizontalAlignment(SwingConstants.LEFT);
+        JLabel footerLabel2 = new JLabel(footerText2);
+        footerLabel2.setAlignmentX(Component.LEFT_ALIGNMENT);
+        footerLabel2.setHorizontalAlignment(SwingConstants.LEFT);
 
-JLabel footerLabel3 = new JLabel(footerText3);
-footerLabel3.setAlignmentX(Component.LEFT_ALIGNMENT);
-footerLabel3.setHorizontalAlignment(SwingConstants.LEFT);
+        JLabel footerLabel3 = new JLabel(footerText3);
+        footerLabel3.setAlignmentX(Component.LEFT_ALIGNMENT);
+        footerLabel3.setHorizontalAlignment(SwingConstants.LEFT);
 
-// Ajouter les JLabels au panneau de footer
-footerPanel.add(footerLabel1);
-footerPanel.add(footerLabel2);
-footerPanel.add(footerLabel3);
+        // Ajouter les JLabels au panneau de footer
+        footerPanel.add(footerLabel1);
+        footerPanel.add(footerLabel2);
+        footerPanel.add(footerLabel3);
 
-// Ajouter le panneau de footer au panneau principal
-mainPanel.add(footerPanel, BorderLayout.SOUTH);
+        // Ajouter le panneau de footer au panneau principal
+        mainPanel.add(footerPanel, BorderLayout.SOUTH);
 
-// Ajout d'un listener pour les clics sur les liens
-footerLabel2.addMouseListener(new MouseAdapter() {
-    @Override
-    public void mouseClicked(MouseEvent e) {
-        openWebpage("https://github.com/BilelBOUHEDDA");
-    }
-});
+        // Ajout d'un listener pour les clics sur les liens
+        footerLabel2.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                openWebpage("https://github.com/BilelBOUHEDDA");
+            }
+        });
 
-footerLabel3.addMouseListener(new MouseAdapter() {
-    @Override
-    public void mouseClicked(MouseEvent e) {
-        openWebpage("https://github.com/GitGudShu");
-    }
-});
-
+        footerLabel3.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                openWebpage("https://github.com/GitGudShu");
+            }
+        });
 
     }
 
@@ -134,7 +133,7 @@ footerLabel3.addMouseListener(new MouseAdapter() {
     private void startGame(boolean vsAi) {
         // Créer une instance de la classe de jeu
         SwingUtilities.invokeLater(() -> {
-            App app = new App(vsAi);
+            Game app = new Game(vsAi);
             app.setVisible(true);
             dispose(); // Ferme la fenêtre du menu principal
         });

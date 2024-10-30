@@ -1,9 +1,9 @@
 import javax.swing.*;
 import java.awt.*;
 
-public class App extends JFrame {
+public class Game extends JFrame {
 
-    public App(boolean vsAi) {
+    public Game(boolean vsAi) {
         setTitle("Othello");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(500, 400);
@@ -12,8 +12,7 @@ public class App extends JFrame {
         Board board = new Board(vsAi); // Passer vsAi à Board
         JPanel mainPanel = new JPanel(new BorderLayout());
         mainPanel.add(board, BorderLayout.CENTER);
-        mainPanel.add(new Sidebar(this, board), BorderLayout.EAST);
-        
+        mainPanel.add(new Sidebar(this, board), BorderLayout.EAST); 
     
         setContentPane(mainPanel);
     }
