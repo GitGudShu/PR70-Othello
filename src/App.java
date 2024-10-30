@@ -2,10 +2,8 @@ import javax.swing.*;
 import java.awt.*;
 
 public class App extends JFrame {
-    private boolean vsAi; // Indique si le jeu est contre l'IA
 
     public App(boolean vsAi) {
-        this.vsAi = vsAi; // Stocke le mode de jeu
         setTitle("Othello");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(500, 400);
