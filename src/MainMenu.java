@@ -12,7 +12,7 @@ public class MainMenu extends JFrame {
     public MainMenu() {
         setTitle("Othello");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(400, 300);
+        setSize(400, 350);
         setLocationRelativeTo(null);
         setBackground(new Color(30, 30, 30)); // Fond de la fenêtre
 
@@ -74,32 +74,55 @@ public class MainMenu extends JFrame {
         buttonPanel.add(exitButton);
         mainPanel.add(buttonPanel, BorderLayout.CENTER);
         
-       JPanel footerPanel = new JPanel();
-footerPanel.setBackground(new Color(20, 20, 20)); // Fond gris foncé pour le footer
+        JPanel footerPanel = new JPanel();
+        footerPanel.setBackground(new Color(20, 20, 20)); // Fond gris foncé pour le footer
 
-// Utilisation d'un JLabel pour le footer avec du HTML et CSS pour le style
-String footerText = "<html><span style='color:white;'>By " +
-    "<a href='https://www.google.com/search?q=Bilel+BOUHEDDA' style='color:white; text-decoration:none;' onMouseOver='this.style.color=\"lightgray\"' onMouseOut='this.style.color=\"white\"'>Bilel BOUHEDDA</a> and " +
-    "<a href='https://www.google.com/search?q=Thomas+Chu' style='color:white; text-decoration:none;' onMouseOver='this.style.color=\"lightgray\"' onMouseOut='this.style.color=\"white\"'>Thomas CHU</a></span></html>";
+footerPanel.setLayout(new BoxLayout(footerPanel, BoxLayout.Y_AXIS)); // Alignement vertical
 
-JLabel footerLabel = new JLabel(footerText);
-footerLabel.setHorizontalAlignment(SwingConstants.CENTER);
-footerPanel.add(footerLabel);
+// Texte du footer
+String footerText1 = "<html><span style='color:white;'>Created by</span></html>";
+String footerText2 = "<html><span style='color:white;'>" +
+    "<a href='https://github.com/BilelBOUHEDDA' style='color:white; text-decoration:none;'>Bilel BOUHEDDA</a></span></html>";
+String footerText3 = "<html><span style='color:white;'>" +
+    "<a href='https://github.com/GitGudShu' style='color:white; text-decoration:none;'>Thomas CHU</a></span></html>";
+
+// Ajouter les JLabel pour chaque texte
+JLabel footerLabel1 = new JLabel(footerText1);
+footerLabel1.setAlignmentX(Component.LEFT_ALIGNMENT);
+footerLabel1.setHorizontalAlignment(SwingConstants.LEFT);
+
+JLabel footerLabel2 = new JLabel(footerText2);
+footerLabel2.setAlignmentX(Component.LEFT_ALIGNMENT);
+footerLabel2.setHorizontalAlignment(SwingConstants.LEFT);
+
+JLabel footerLabel3 = new JLabel(footerText3);
+footerLabel3.setAlignmentX(Component.LEFT_ALIGNMENT);
+footerLabel3.setHorizontalAlignment(SwingConstants.LEFT);
+
+// Ajouter les JLabels au panneau de footer
+footerPanel.add(footerLabel1);
+footerPanel.add(footerLabel2);
+footerPanel.add(footerLabel3);
+
+// Ajouter le panneau de footer au panneau principal
 mainPanel.add(footerPanel, BorderLayout.SOUTH);
 
-// Ajout d'un listener pour les clics sur le footer
-footerLabel.addMouseListener(new MouseAdapter() {
+// Ajout d'un listener pour les clics sur les liens
+footerLabel2.addMouseListener(new MouseAdapter() {
     @Override
     public void mouseClicked(MouseEvent e) {
-        String text = footerLabel.getText();
-        if (text.contains("Bilel BOUHEDDA")) {
-            openWebpage("https://www.google.com/search?q=Bilel+BOUHEDDA");
-        } else if (text.contains("Thomas Chu")) {
-            openWebpage("https://www.google.com/search?q=Thomas+Chu")
-            ;
-        }
+        openWebpage("https://github.com/BilelBOUHEDDA");
     }
 });
+
+footerLabel3.addMouseListener(new MouseAdapter() {
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        openWebpage("https://github.com/GitGudShu");
+    }
+});
+
+
     }
 
     private ImageIcon resizeIcon(ImageIcon icon, int width, int height) {
