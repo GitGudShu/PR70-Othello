@@ -2,9 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.IOException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import javax.swing.border.EmptyBorder;
 
 public class MainMenu extends JFrame {
@@ -72,52 +70,36 @@ public class MainMenu extends JFrame {
         buttonPanel.add(rulesButton);
         buttonPanel.add(exitButton);
         mainPanel.add(buttonPanel, BorderLayout.CENTER);
+
+        // Main Green color
+        Color greenColor = new Color(125, 235, 52);
         
         JPanel footerPanel = new JPanel();
-        footerPanel.setBackground(new Color(20, 20, 20)); // Footer background color
+        footerPanel.setBackground(new Color(30, 30, 30)); // Same background color as mainPanel
+        footerPanel.setLayout(new BoxLayout(footerPanel, BoxLayout.X_AXIS));
 
-        footerPanel.setLayout(new BoxLayout(footerPanel, BoxLayout.Y_AXIS)); // Vertical alignment
+        // Footer text elements with hyperlinks in one line
+        String footerText = "<html><span style='color:white;'>Created by: </span>" +
+            "<a href='https://github.com/BilelBOUHEDDA' style='color: rgb(" + greenColor.getRed() + "," + greenColor.getGreen() + "," + greenColor.getBlue() +
+            "); text-decoration: none;'>Bilel BOUHEDDA</a> " +
+            "<span style='color:white;  '> &amp; </span>" +
+            "<a href='https://github.com/GitGudShu' style='color: rgb(" + greenColor.getRed() + "," + greenColor.getGreen() + "," + greenColor.getBlue() +
+            "); text-decoration: none;'>Thomas CHU</a></html>";
 
-        // Footer text
-        String footerText1 = "<html><span style='color:white;'>Created by</span></html>";
-        String footerText2 = "<html><span style='color:white;'>" +
-            "<a href='https://github.com/BilelBOUHEDDA' style='color:white; text-decoration:none;'>Bilel BOUHEDDA</a></span></html>";
-        String footerText3 = "<html><span style='color:white;'>" +
-            "<a href='https://github.com/GitGudShu' style='color:white; text-decoration:none;'>Thomas CHU</a></span></html>";
+        JLabel footerLabel = new JLabel(footerText);
+        footerLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        footerLabel.setHorizontalAlignment(SwingConstants.LEFT);
+        footerLabel.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        footerLabel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                openWebpage(e, "https://github.com/BilelBOUHEDDA", "https://github.com/GitGudShu");
+            }
+        });
 
-        JLabel footerLabel1 = new JLabel(footerText1);
-        footerLabel1.setAlignmentX(Component.LEFT_ALIGNMENT);
-        footerLabel1.setHorizontalAlignment(SwingConstants.LEFT);
-
-        JLabel footerLabel2 = new JLabel(footerText2);
-        footerLabel2.setAlignmentX(Component.LEFT_ALIGNMENT);
-        footerLabel2.setHorizontalAlignment(SwingConstants.LEFT);
-
-        JLabel footerLabel3 = new JLabel(footerText3);
-        footerLabel3.setAlignmentX(Component.LEFT_ALIGNMENT);
-        footerLabel3.setHorizontalAlignment(SwingConstants.LEFT);
-
-        footerPanel.add(footerLabel1);
-        footerPanel.add(footerLabel2);
-        footerPanel.add(footerLabel3);
+        footerPanel.add(footerLabel);
 
         mainPanel.add(footerPanel, BorderLayout.SOUTH);
-
-        // Footer listeners
-        footerLabel2.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                openWebpage("https://github.com/BilelBOUHEDDA");
-            }
-        });
-
-        footerLabel3.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                openWebpage("https://github.com/GitGudShu");
-            }
-        });
-
     }
 
     private ImageIcon resizeIcon(ImageIcon icon, int width, int height) {
@@ -179,15 +161,21 @@ public class MainMenu extends JFrame {
         rulesDialog.setLocationRelativeTo(this);
         rulesDialog.setVisible(true);
     }
-    
 
-    private void openWebpage(String urlString) {
-        try {
-            Desktop.getDesktop().browse(new URI(urlString));
-        } catch (IOException | URISyntaxException e) {
-            e.printStackTrace();
+
+    private static void openWebpage(MouseEvent e, String... urls) {
+        int linkWidth = 200; // This is an assumed width for each link
+        int index = e.getPoint().x / linkWidth;
+    
+        if (index >= 0 && index < urls.length) {
+            try {
+                Desktop.getDesktop().browse(new URI(urls[index]));
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
         }
     }
+    
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
