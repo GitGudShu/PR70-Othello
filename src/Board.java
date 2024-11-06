@@ -41,13 +41,13 @@ public class Board extends JPanel {
         
         // Ajouter le JLabel au panneau
         setLayout(new BorderLayout()); // Change le layout pour ajouter un JLabel
-        add(statusLabel, BorderLayout.NORTH); // Ajoute le JLabel en haut
-        JPanel boardPanel = new JPanel(new GridLayout(gridSize, gridSize, 0, 0));
-        boardPanel.setBorder(BorderFactory.createMatteBorder(15, 15, 15, 15, new Color(30, 30, 30)));
-    
-        // Initialisation des cellules
-        initializeBoard(boardPanel);
-    
+            add(statusLabel, BorderLayout.NORTH); // Ajoute le JLabel en haut
+            JPanel boardPanel = new JPanel(new GridLayout(gridSize, gridSize, 0, 0));
+            boardPanel.setBorder(BorderFactory.createMatteBorder(15, 15, 15, 15, new Color(30, 30, 30)));
+        
+            // Initialisation des cellules
+            initializeBoard(boardPanel);
+        
         add(boardPanel, BorderLayout.CENTER); // Ajoute le panneau du plateau
         displayValidMoves();
         updateStatusLabel(); // Met à jour le JLabel au démarrage
@@ -369,5 +369,20 @@ public class Board extends JPanel {
         updateBoard();
         displayValidMoves();
     }
-    
+
+    @Override
+    public Dimension getPreferredSize() {
+        // On calcule la dimension carrée basée sur la taille actuelle de la fenêtre
+        int size = Math.min(getParent().getWidth(), getParent().getHeight());
+        return new Dimension(size, size);
+    }
+
+    @Override
+    public void doLayout() {
+        // On redimensionne le Board chaque fois que la fenêtre change de taille
+        Dimension preferredSize = getPreferredSize();
+        setBounds(0, 0, preferredSize.width, preferredSize.height);
+        super.doLayout();
+    }
+
 }
