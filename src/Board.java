@@ -26,6 +26,7 @@ public class Board extends JPanel {
 
     public Board(boolean vsAi) {
         this.vsAi = vsAi;
+        System.out.println(vsAi);
         this.grid = new Grid();
         this.ai = new AI(1);
     
@@ -97,11 +98,11 @@ public class Board extends JPanel {
         }
     }
 
-    private void updateGameState() {
+    private boolean updateGameState() {
         if (isGameOver()) {
             int playerScore = grid.getPlayerScore(2); // Noir
             int aiScore = grid.getPlayerScore(1); // Blanc
-
+    
             if (playerScore > aiScore) {
                 gameState = GameState.WIN;
             } else if (playerScore < aiScore) {
@@ -109,10 +110,13 @@ public class Board extends JPanel {
             } else {
                 gameState = GameState.DRAW;
             }
-
+    
             showGameResult();
+            return false; // La partie est terminée
         }
+        return true; // La partie continue
     }
+    
 
     private boolean isGameOver() {
         return grid.getValidMoves(1).isEmpty() && grid.getValidMoves(2).isEmpty();
@@ -158,11 +162,17 @@ public class Board extends JPanel {
         buttonPanel.add(mainMenuButton);
         panel.add(buttonPanel, BorderLayout.SOUTH);
     
-        // Action pour le bouton "Jouer à nouveau"
-        playAgainButton.addActionListener(e -> {
-            resetGame();
-            resultDialog.dispose();
+        // Configurer le bouton "Jouer à nouveau"
+        playAgainButton.addActionListener(e -> resultDialog.dispose()); // Ferme la boîte de dialogue
+
+        // Ajout d'un WindowListener à la boîte de dialogue pour capturer sa fermeture
+        resultDialog.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosed(java.awt.event.WindowEvent e) {
+                resetGame();
+            }
         });
+
     
         // Action pour le bouton "Quitter"
         exitButton.addActionListener(e -> System.exit(0));
@@ -179,17 +189,17 @@ public class Board extends JPanel {
         resultDialog.setVisible(true);
     }
     
-    
     protected void resetGame() {
-        currentPlayer = 2;
-
-        grid.reset();
+        currentPlayer = 2; // Assurez-vous que le joueur noir commence
         gameState = GameState.IN_PROGRESS;
-
-        updateBoard();
-        displayValidMoves();
-        updateStatusLabel(); // Met à jour le JLabel pour le nouveau jeu
-    }
+        
+        grid.reset(); // Réinitialise l'état de la grille
+        
+        updateBoard(); // Met à jour l'affichage du plateau
+        System.out.println("Le reset a été effectué");
+        displayValidMoves(); // Affiche les mouvements valides pour le joueur noir
+        updateStatusLabel(); // Met à jour le JLabel pour indiquer que c'est aux noirs de jouer
+    }    
 
     // ########################## Player Moves ################################# //
     private void displayValidMoves() {
@@ -203,15 +213,16 @@ public class Board extends JPanel {
     
     private void handlePlayerMove(Cell cell) {
         if (currentPlayer == 2 && cell.getState() == 0) { // J1 joue avec le noir
+            System.out.println("Oui");
             Position pos = cell.getPosition();
             if (grid.isValidMove(pos.getRow(), pos.getCol(), currentPlayer, 1)) {
                 grid.placePawnAndFlip(pos, currentPlayer);
                 playSound(); // Joue le son après le coup
                 updateBoard();
-                updateGameState();
-                if (gameState == GameState.IN_PROGRESS) {
-                    switchTurn();
+                if (!updateGameState()) { // Si la partie est terminée, ne pas changer de tour
+                    return;
                 }
+                switchTurn();
             }
         } else if (currentPlayer == 1 && cell.getState() == 0) { // J2 joue avec le blanc
             Position pos = cell.getPosition();
@@ -219,25 +230,26 @@ public class Board extends JPanel {
                 grid.placePawnAndFlip(pos, currentPlayer);
                 playSound(); // Joue le son après le coup
                 updateBoard();
-                updateGameState();
-                if (gameState == GameState.IN_PROGRESS) {
-                    switchTurn();
+                if (!updateGameState()) { // Si la partie est terminée, ne pas changer de tour
+                    return;
                 }
+                switchTurn();
             }
         }
-    }
+    }    
     
     private void switchTurn() {
         currentPlayer = (currentPlayer == 1) ? 2 : 1;
-        System.out.println("Current player : " + currentPlayer);
+
         updateStatusLabel(); // Met à jour le JLabel après le changement de tour
         List<Position> validMoves = grid.getValidMoves(currentPlayer);
+        System.out.println(validMoves);
         if (validMoves.isEmpty()) {
             String message = (currentPlayer == 1)
                     ? "White has no valid moves! Passing turn to Black."
                     : "Black has no valid moves! Passing turn to White.";
     
-            // Création d'une nouvelle fenêtre pour afficher le résultat
+            // Affichage d'une fenêtre indiquant que le tour est passé
             JDialog dialog = new JDialog((JFrame) SwingUtilities.getWindowAncestor(this), "Turn Skipped", true);
             dialog.setSize(600, 250);
             JPanel panel = new JPanel(new BorderLayout(0, 15));
@@ -264,41 +276,43 @@ public class Board extends JPanel {
             dialog.setLocationRelativeTo(null);
             dialog.setVisible(true);
     
-            currentPlayer = (currentPlayer == 1) ? 2 : 1; // Changer le tour à nouveau
+            // Changer le tour à nouveau si l'adversaire peut jouer
+            currentPlayer = (currentPlayer == 1) ? 2 : 1;
     
             if (grid.getValidMoves(currentPlayer).isEmpty()) {
-                updateGameState(); 
+                updateGameState(); // Si aucun joueur ne peut jouer, fin du jeu
             } else {
-                updateStatusLabel(); // Met à jour le JLabel pour le joueur suivant
-                displayValidMoves(); // Afficher les mouvements valides uniquement pour le joueur humain
+                updateStatusLabel();
+                if (vsAi && currentPlayer == 1) {
+                    handleAIMove(); // Forcer l'IA à jouer si elle peut
+                } else {
+                    displayValidMoves(); // Affiche les coups valides pour le joueur humain
+                }
             }
         } else {
+            // Si le joueur peut jouer
             if (vsAi && currentPlayer == 1) {
                 handleAIMove();
             } else {
-                if (currentPlayer == 1) {
-                    displayValidMoves();
-                } else {
-                    displayValidMoves(); // Afficher les mouvements valides pour le joueur 2
-                }
+                displayValidMoves();
             }
         }
     }
     
 
     private void handleAIMove() {
-        // Delay AI move by 2 seconds
-        Timer timer = new Timer(2000, e -> {
+        // Delay AI move by 1 seconde
+        Timer timer = new Timer(1000, e -> {
             Position aiMove = ai.getMove(grid);
-            System.out.println("bbbbbbbbbbbbbb");
             if (aiMove != null && grid.isValidMove(aiMove.getRow(), aiMove.getCol(), currentPlayer, 2)) {
-                System.out.println("aaaaaaaaaaaaaaaa");
                 grid.placePawnAndFlip(aiMove, currentPlayer);
                 playSound(); // Joue le son après le coup de l'IA
                 updateBoard();
-                updateGameState(); // Check if game is over after AI move
+                
+                if (updateGameState()) { // Vérifie si la partie est toujours en cours
+                    switchTurn();
+                }
             }
-            switchTurn();
         });
         timer.setRepeats(false); // This makes sure the timer only runs once
         timer.start();
@@ -345,4 +359,15 @@ public class Board extends JPanel {
         updateBoard();
         displayValidMoves(); 
     }
+
+    public void setupBoard(int[][] initialState) {
+        for (int row = 0; row < gridSize; row++) {
+            for (int col = 0; col < gridSize; col++) {
+                grid.setCellState(row, col, initialState[row][col]);
+            }
+        }
+        updateBoard();
+        displayValidMoves();
+    }
+    
 }
