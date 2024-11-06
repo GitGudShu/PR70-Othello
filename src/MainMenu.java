@@ -4,19 +4,53 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.net.URI;
 import javax.swing.border.EmptyBorder;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 
 public class MainMenu extends JFrame {
+    private int topBottomBorderSize = 40; // Bordure en haut et en bas
+    private int leftRightBorderSize = 40; // Bordure à gauche et à droite
 
     public MainMenu() {
         setTitle("Othello");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(400, 350);
+        setMinimumSize(new Dimension(400, 350)); 
         setLocationRelativeTo(null);
         setBackground(new Color(30, 30, 30)); // Main background color
 
         JPanel mainPanel = new JPanel(new BorderLayout(0, 15));
         mainPanel.setBackground(new Color(30, 30, 30)); // Panel background color
-        mainPanel.setBorder(new EmptyBorder(20, 20, 20, 20));
+        
+        // Initial border size
+        mainPanel.setBorder(new EmptyBorder(topBottomBorderSize, leftRightBorderSize, topBottomBorderSize, leftRightBorderSize));
+
+        // Add a listener to adjust the border size on window resize
+        addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                // Get the current width and height of the window
+                int width = getWidth();
+                int height = getHeight();
+                
+                // If the window is larger than 400x400, set the border size accordingly
+                if (width > 400 && height > 400) {
+                    // Set top and bottom borders to 400px
+                    topBottomBorderSize = 250;
+                    // Set left and right borders to 600px
+                    leftRightBorderSize = 500;
+                } else {
+                    // Otherwise, set borders to 40px
+                    topBottomBorderSize = 40;
+                    leftRightBorderSize = 40;
+                }
+
+                // Update the border size only if it changes
+                mainPanel.setBorder(new EmptyBorder(topBottomBorderSize, leftRightBorderSize, topBottomBorderSize, leftRightBorderSize));
+                revalidate(); // Revalidate the panel to apply changes
+            }
+        });
+
         getContentPane().add(mainPanel);
 
         // Title and Logo
