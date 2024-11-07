@@ -4,52 +4,19 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.net.URI;
 import javax.swing.border.EmptyBorder;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
 
 public class MainMenu extends JFrame {
-    private int topBottomBorderSize = 40; // Bordure en haut et en bas
-    private int leftRightBorderSize = 40; // Bordure à gauche et à droite
-
     public MainMenu() {
         setTitle("Othello");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(400, 350);
-        setMinimumSize(new Dimension(400, 350)); 
+        setMinimumSize(new Dimension(400, 380)); 
         setLocationRelativeTo(null);
         setBackground(new Color(30, 30, 30)); // Main background color
 
         JPanel mainPanel = new JPanel(new BorderLayout(0, 15));
         mainPanel.setBackground(new Color(30, 30, 30)); // Panel background color
-        
-        // Initial border size
-        mainPanel.setBorder(new EmptyBorder(topBottomBorderSize, leftRightBorderSize, topBottomBorderSize, leftRightBorderSize));
-
-        // Add a listener to adjust the border size on window resize
-        addComponentListener(new ComponentAdapter() {
-            @Override
-            public void componentResized(ComponentEvent e) {
-                // Get the current width and height of the window
-                int width = getWidth();
-                int height = getHeight();
-                
-                // If the window is larger than 400x400, set the border size accordingly
-                if (width > 400 && height > 400) {
-                    // Set top and bottom borders to 400px
-                    topBottomBorderSize = 250;
-                    // Set left and right borders to 600px
-                    leftRightBorderSize = 500;
-                } else {
-                    // Otherwise, set borders to 40px
-                    topBottomBorderSize = 40;
-                    leftRightBorderSize = 40;
-                }
-
-                // Update the border size only if it changes
-                mainPanel.setBorder(new EmptyBorder(topBottomBorderSize, leftRightBorderSize, topBottomBorderSize, leftRightBorderSize));
-                revalidate(); // Revalidate the panel to apply changes
-            }
-        });
+        mainPanel.setBorder(new EmptyBorder(20, 20, 20, 20));
 
         getContentPane().add(mainPanel);
 
@@ -164,22 +131,32 @@ public class MainMenu extends JFrame {
         titleLabel.setFont(new Font("Arial", Font.BOLD, 18));
         panel.add(titleLabel, BorderLayout.NORTH);
     
+        Color greenColor = new Color(125, 235, 52);
+        String footerTextRules = "<br><br><a href='https://info.lite.games/en/support/solutions/articles/60000688960-othello-rules' "
+            + "style='color: rgb(" + greenColor.getRed() + "," + greenColor.getGreen() + "," + greenColor.getBlue() + "); text-decoration: none;'>info.lite.games Othello: Rules</a> ";
+
         String rulesText = "<html><div style='width:350px; font-family: Arial; color: white;'>"
-                + "<h2>Setup</h2>"
-                + "<p>The game is played on an 8×8 board with disc-like gaming pieces that have a black and a white side."
-                + "<br><br>At the beginning of every game, four pieces, two black and two white, are put in a definite starting position in the center of the board.</p>"
-                + "<h2>Outflanking the opponent</h2>"
-                + "<p>The black player always makes the first move and must place a black piece in a position that outflanks the opponent’s pieces.</p>"
-                + "<h2>Turning the Pieces</h2>"
-                + "<p>After placing a piece, black turns over all white pieces lying on a straight line between the new piece and any anchoring black pieces.</p>"
-                + "<h2>Winning the Game</h2>"
-                + "<p>The game ends when the board is full or when neither player can make a valid move. The player with the most pieces wins.</p>"
-                + "<p><em>Rules source: <a href='https://info.lite.games/en/support/solutions/articles/60000688960-othello-rules'>lite.games</a></em></p>"
-                + "</div></html>";
-    
+                        + "<h2>Setup</h2>"
+                        + "<p>The game is played on an 8×8 board with disc-like gaming pieces that have a black and a white side."
+                        + "<br><br>At the beginning of every game, four pieces, two black and two white, are put in a definite starting position in the center of the board.</p>"
+                        + "<h2>Outflanking the opponent</h2>"
+                        + "<p>The black player always makes the first move and must place a black piece in a position that outflanks the opponent’s pieces.</p>"
+                        + "<h2>Turning the Pieces</h2>"
+                        + "<p>After placing a piece, black turns over all white pieces lying on a straight line between the new piece and any anchoring black pieces.</p>"
+                        + "<h2>Winning the Game</h2>"
+                        + "<p>The game ends when the board is full or when neither player can make a valid move. The player with the most pieces wins.</p>"
+                        + footerTextRules
+                        + "</div></html>";
+
         JLabel rulesLabel = new JLabel(rulesText);
         rulesLabel.setForeground(Color.WHITE);
         rulesLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        rulesLabel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                openWebpage(e,"https://info.lite.games/en/support/solutions/articles/60000688960-othello-rules");
+            }
+        });
         panel.add(rulesLabel, BorderLayout.CENTER);
     
         // Close button
@@ -196,7 +173,6 @@ public class MainMenu extends JFrame {
         rulesDialog.setVisible(true);
     }
 
-
     private static void openWebpage(MouseEvent e, String... urls) {
         int linkWidth = 200; // This is an assumed width for each link
         int index = e.getPoint().x / linkWidth;
@@ -210,7 +186,6 @@ public class MainMenu extends JFrame {
         }
     }
     
-
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             MainMenu menu = new MainMenu();
