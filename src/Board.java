@@ -12,8 +12,9 @@ public class Board extends JPanel {
     private final Grid grid;
     private final AI ai;
     private int currentPlayer = 2; // 1 = white, 2 = black
-    private JLabel statusLabel; 
+    private JLabel statusLabel;
     private boolean vsAi;
+    private JLabel whitePawnLabel, blackPawnLabel;
 
     private enum GameState { 
         IN_PROGRESS, 
@@ -26,31 +27,59 @@ public class Board extends JPanel {
 
     public Board(boolean vsAi) {
         this.vsAi = vsAi;
-        System.out.println(vsAi);
         this.grid = new Grid();
         this.ai = new AI(1);
     
-        // Initialisation du JLabel
+        // Initialisation du JLabel pour le statut du jeu
         statusLabel = new JLabel();
-        statusLabel.setFont(new Font("Arial", Font.BOLD, 16));
+        statusLabel.setFont(new Font("Arial", Font.BOLD, 22));
         statusLabel.setHorizontalAlignment(SwingConstants.CENTER);
         statusLabel.setForeground(Color.WHITE);
         statusLabel.setBorder(new EmptyBorder(15, 15, 0, 15));
         statusLabel.setBackground(new Color(30, 30, 30)); // Définit la couleur de fond en noir
         statusLabel.setOpaque(true); // Rend le fond opaque
+    
+        // Panneau pour les informations de statut et pions
+        JPanel infoPanel = new JPanel(new BorderLayout());
+        infoPanel.setBackground(new Color(30, 30, 30));
+        infoPanel.setBorder(new EmptyBorder(15, 15, 15, 15));
+    
+        // Labels pour afficher le nombre de pions
+        whitePawnLabel = new JLabel("White pawns: 0");
+        blackPawnLabel = new JLabel("Black pawns: 0");
         
-        // Ajouter le JLabel au panneau
-        setLayout(new BorderLayout()); // Change le layout pour ajouter un JLabel
-            add(statusLabel, BorderLayout.NORTH); // Ajoute le JLabel en haut
-            JPanel boardPanel = new JPanel(new GridLayout(gridSize, gridSize, 0, 0));
-            boardPanel.setBorder(BorderFactory.createMatteBorder(15, 15, 15, 15, new Color(30, 30, 30)));
-        
-            // Initialisation des cellules
-            initializeBoard(boardPanel);
-        
-        add(boardPanel, BorderLayout.CENTER); // Ajoute le panneau du plateau
+        whitePawnLabel.setForeground(Color.WHITE);
+        blackPawnLabel.setForeground(Color.WHITE);
+    
+        // Panneaux pour afficher les pions et leur nombre
+        JPanel leftPanel = new JPanel();
+        leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS)); // Mise en forme verticale
+        leftPanel.setOpaque(false);
+        leftPanel.add(whitePawnLabel);
+    
+        JPanel rightPanel = new JPanel();
+        rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS)); // Mise en forme verticale
+        rightPanel.setOpaque(false);
+        rightPanel.add(blackPawnLabel);
+    
+        // Ajout des éléments au panneau d'information
+        infoPanel.add(leftPanel, BorderLayout.WEST);
+        infoPanel.add(statusLabel, BorderLayout.CENTER); // Affichage du tour au centre
+        infoPanel.add(rightPanel, BorderLayout.EAST);
+    
+        setLayout(new BorderLayout());
+        add(infoPanel, BorderLayout.NORTH);
+    
+        JPanel boardPanel = new JPanel(new GridLayout(gridSize, gridSize, 0, 0));
+        boardPanel.setBorder(BorderFactory.createMatteBorder(15, 15, 15, 15, new Color(30, 30, 30)));
+    
+        // Initialisation des cellules du plateau
+        initializeBoard(boardPanel);
+        add(boardPanel, BorderLayout.CENTER);
+    
         displayValidMoves();
         updateStatusLabel(); // Met à jour le JLabel au démarrage
+        updatePawnCount(); // Met à jour les pions au démarrage
     }
 
     private void playSound() {
@@ -192,13 +221,13 @@ public class Board extends JPanel {
     protected void resetGame() {
         currentPlayer = 2; // Assurez-vous que le joueur noir commence
         gameState = GameState.IN_PROGRESS;
-        
         grid.reset(); // Réinitialise l'état de la grille
-        
+
         updateBoard(); // Met à jour l'affichage du plateau
         System.out.println("Le reset a été effectué");
         displayValidMoves(); // Affiche les mouvements valides pour le joueur noir
         updateStatusLabel(); // Met à jour le JLabel pour indiquer que c'est aux noirs de jouer
+        updatePawnCount(); // Met à jour le nombre de pions
     }    
 
     // ########################## Player Moves ################################# //
@@ -219,6 +248,7 @@ public class Board extends JPanel {
                 grid.placePawnAndFlip(pos, currentPlayer);
                 playSound(); // Joue le son après le coup
                 updateBoard();
+                updatePawnCount(); // Met à jour le nombre de pions
                 if (!updateGameState()) { // Si la partie est terminée, ne pas changer de tour
                     return;
                 }
@@ -230,6 +260,7 @@ public class Board extends JPanel {
                 grid.placePawnAndFlip(pos, currentPlayer);
                 playSound(); // Joue le son après le coup
                 updateBoard();
+                updatePawnCount(); // Met à jour le nombre de pions
                 if (!updateGameState()) { // Si la partie est terminée, ne pas changer de tour
                     return;
                 }
@@ -240,8 +271,8 @@ public class Board extends JPanel {
     
     private void switchTurn() {
         currentPlayer = (currentPlayer == 1) ? 2 : 1;
-
         updateStatusLabel(); // Met à jour le JLabel après le changement de tour
+        updatePawnCount();
         List<Position> validMoves = grid.getValidMoves(currentPlayer);
         System.out.println(validMoves);
         if (validMoves.isEmpty()) {
@@ -251,11 +282,9 @@ public class Board extends JPanel {
     
             // Affichage d'une fenêtre indiquant que le tour est passé
             JDialog dialog = new JDialog((JFrame) SwingUtilities.getWindowAncestor(this), "Turn Skipped", true);
-            dialog.setSize(600, 250);
             JPanel panel = new JPanel(new BorderLayout(0, 15));
             panel.setBackground(new Color(30, 30, 30)); // Fond sombre
             panel.setBorder(new EmptyBorder(20, 20, 20, 20)); // Padding de 20 pour toute la fenêtre
-    
             dialog.getContentPane().add(panel);
     
             JLabel label = new JLabel(message);
@@ -272,7 +301,7 @@ public class Board extends JPanel {
             buttonPanel.add(okButton);
             panel.add(buttonPanel, BorderLayout.SOUTH);
     
-            dialog.setSize(400, 160);
+            dialog.setSize(600, 160);
             dialog.setLocationRelativeTo(null);
             dialog.setVisible(true);
     
@@ -308,7 +337,7 @@ public class Board extends JPanel {
                 grid.placePawnAndFlip(aiMove, currentPlayer);
                 playSound(); // Joue le son après le coup de l'IA
                 updateBoard();
-                
+                updatePawnCount();
                 if (updateGameState()) { // Vérifie si la partie est toujours en cours
                     switchTurn();
                 }
@@ -358,6 +387,13 @@ public class Board extends JPanel {
 
         updateBoard();
         displayValidMoves(); 
+        updateStatusLabel();
+        updatePawnCount();
+
+        SwingUtilities.invokeLater(() -> {
+            // Réinitialiser le texte à jour dans le thread de l'UI
+            updateStatusLabel();  // Actualiser le texte du statut
+        });
     }
 
     public void setupBoard(int[][] initialState) {
@@ -376,6 +412,29 @@ public class Board extends JPanel {
         int size = Math.min(getParent().getWidth(), getParent().getHeight());
         return new Dimension(size, size);
     }
+
+    private void updatePawnCount() {
+        int blackPawns = countPawns(2); // Noir
+        int whitePawns = countPawns(1); // Blanc
+
+        // Mettre à jour les labels de pions
+        whitePawnLabel.setText("White pawns: " + whitePawns);
+        blackPawnLabel.setText("Black pawns: " + blackPawns);
+    }
+
+    private int countPawns(int player) {
+        int count = 0;
+        for (int row = 0; row < gridSize; row++) {
+            for (int col = 0; col < gridSize; col++) {
+                int cellState = grid.getCellState(row, col);
+                if (cellState == player) {
+                    count++;
+                }
+            }
+        }
+        return count;
+    }
+
 
     @Override
     public void doLayout() {

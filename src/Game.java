@@ -6,14 +6,10 @@ import java.awt.*;
         public Game(boolean vsAi) {
             setTitle("Othello");
             setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            setSize(1000, 600);
+            setSize(800, 600);
             setLocationRelativeTo(null);
             setMinimumSize(new Dimension(600, 400)); 
-            
             Board board = new Board(vsAi);
-            
-            
-            
             // // Configuration du plateau pour les tests
             // int[][] initialState = {
             //     {1, 2, 2, 2, 2, 2, 0, 0},
@@ -26,15 +22,11 @@ import java.awt.*;
             //     {2, 2, 2, 2, 2, 2, 2, 2}
             // };
             // board.setupBoard(initialState);
-        
-
             JPanel mainPanel = new JPanel(new BorderLayout());
             mainPanel.add(board, BorderLayout.WEST);
             mainPanel.add(new Sidebar(this, board), BorderLayout.CENTER);
             setContentPane(mainPanel);
         }
-        
-        
 
         public static void main(String[] args) {
             SwingUtilities.invokeLater(() -> {
