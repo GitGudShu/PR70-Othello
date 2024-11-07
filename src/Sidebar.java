@@ -56,7 +56,7 @@ public class Sidebar extends JPanel {
         add(buttonPanel, BorderLayout.CENTER);
     }
 
-    private void handleSaveGame() {
+    public boolean handleSaveGame() {
         SaveManagerWindow saveWindow = new SaveManagerWindow(parentFrame);
         saveWindow.setVisible(true);
 
@@ -65,8 +65,10 @@ public class Sidebar extends JPanel {
             if (fileName != null && !fileName.trim().isEmpty()) {
                 GameStatus gameState = board.getGameState();
                 SaveManager.saveGame(gameState, fileName + ".xml");
+                return true;
             }
-        }
+        } 
+        return false;
     }
 
     private void handleLoadGame() {
