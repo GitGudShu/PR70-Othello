@@ -145,7 +145,6 @@ public class Board extends JPanel {
         }
         return true; // La partie continue
     }
-    
 
     private boolean isGameOver() {
         return grid.getValidMoves(1).isEmpty() && grid.getValidMoves(2).isEmpty();
@@ -242,7 +241,6 @@ public class Board extends JPanel {
     
     private void handlePlayerMove(Cell cell) {
         if (currentPlayer == 2 && cell.getState() == 0) { // J1 joue avec le noir
-            System.out.println("Oui");
             Position pos = cell.getPosition();
             if (grid.isValidMove(pos.getRow(), pos.getCol(), currentPlayer, 1)) {
                 grid.placePawnAndFlip(pos, currentPlayer);
@@ -274,7 +272,6 @@ public class Board extends JPanel {
         updateStatusLabel(); // Met à jour le JLabel après le changement de tour
         updatePawnCount();
         List<Position> validMoves = grid.getValidMoves(currentPlayer);
-        System.out.println(validMoves);
         if (validMoves.isEmpty()) {
             String message = (currentPlayer == 1)
                     ? "White has no valid moves! Passing turn to Black."
@@ -327,7 +324,6 @@ public class Board extends JPanel {
             }
         }
     }
-    
 
     private void handleAIMove() {
         // Delay AI move by 1 seconde
@@ -347,7 +343,6 @@ public class Board extends JPanel {
         timer.start();
     }
     
-
     private void updateBoard() {
         for (int row = 0; row < gridSize; row++) {
             for (int col = 0; col < gridSize; col++) {
@@ -359,7 +354,6 @@ public class Board extends JPanel {
     }
 
     // ########################## Save Manager methods ################################# //
-
     // Retrieve the loaded game state
     public GameStatus getGameState() {
         int[][] gridState = new int[gridSize][gridSize];
@@ -434,7 +428,6 @@ public class Board extends JPanel {
         }
         return count;
     }
-
 
     @Override
     public void doLayout() {
