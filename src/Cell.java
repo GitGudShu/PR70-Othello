@@ -5,10 +5,15 @@ public class Cell extends JPanel {
     private int state; // 0 = empty, 1 = white, 2 = black
     private boolean showHint; // Do we show valid moves ?
     private Position position;
-    private Image whiteDisc; // Image pour le disque blanc
-    private Image blackDisc; // Image pour le disque noir
-    private Image hintDisc; // Image pour l'indication
+    private Image whiteDisc; // White pawn image
+    private Image blackDisc; // Black pawn image
+    private Image hintDisc; // Hint pawn image
 
+    /**
+     * Create a new Cell object
+     * @param row
+     * @param col
+     */
     public Cell(int row, int col) {
         this.position = new Position(row, col);
         this.state = 0;
@@ -40,6 +45,11 @@ public class Cell extends JPanel {
     }
 
 
+    /**
+     * Paints the cell with the appropriate image based on its state.
+     *
+     * @param g the Graphics object to paint with
+     */
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);

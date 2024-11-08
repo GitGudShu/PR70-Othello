@@ -10,8 +10,10 @@ public class AI {
     public Position getMove(Grid grid) {
         List<Position> validMoves = grid.getValidMoves(player);
         if (!validMoves.isEmpty()) {
-            return validMoves.get(0); // Dumb AI, just return the first valid move
+            return validMoves.get(0); // Dumb AI, just return the first valid move :)
         }
         return null; // No valid moves (Empty list)
     }
+
+    // TODO: Implement the minimax algorithm to make the AI smarter
 }
