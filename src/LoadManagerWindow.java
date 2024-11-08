@@ -7,6 +7,12 @@ import java.util.List;
 public class LoadManagerWindow extends JDialog {
     private String selectedSaveFile = null;
 
+    /**
+     * Constructs a LoadManagerWindow dialog for selecting a save file to load.
+     * The dialog presents the user with a list of available save files and buttons for loading or canceling.
+     *
+     * @param parent the parent JFrame to set as the owner of this dialog
+     */
     public LoadManagerWindow(JFrame parent) {
         super(parent, "Load Game", true);
         getContentPane().setBackground(new Color(30, 30, 30));
