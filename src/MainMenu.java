@@ -6,6 +6,11 @@ import java.net.URI;
 import javax.swing.border.EmptyBorder;
 
 public class MainMenu extends JFrame {
+
+    /**
+     * Main Menu of the game
+     * Contains buttons to start the game, show the rules and quit the game
+     */
     public MainMenu() {
         setTitle("Othello");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -103,12 +108,23 @@ public class MainMenu extends JFrame {
         mainPanel.add(footerPanel, BorderLayout.SOUTH);
     }
 
+    /**
+     * Resize an ImageIcon
+     * @param icon
+     * @param width
+     * @param height
+     * @return ImageIcon resized
+     */
     private ImageIcon resizeIcon(ImageIcon icon, int width, int height) {
         Image img = icon.getImage(); 
         Image newImg = img.getScaledInstance(width, height, Image.SCALE_SMOOTH);
         return new ImageIcon(newImg);
     }
 
+    /**
+     * Start the game, either against another player or against the AI
+     * @param vsAi boolean to determine if the game is against the AI
+     */
     private void startGame(boolean vsAi) {
         SwingUtilities.invokeLater(() -> {
             Game app = new Game(vsAi);
@@ -117,11 +133,14 @@ public class MainMenu extends JFrame {
         });
     }
 
+    /**
+     * Show the rules of the game in a dialog window
+     */
     public void showRulesWindow() {
         JDialog rulesDialog = new JDialog(this, "Game Rules", true);
     
         JPanel panel = new JPanel(new BorderLayout(0, 15));
-        panel.setBackground(new Color(30, 30, 30)); // Background color
+        panel.setBackground(new Color(30, 30, 30));
         panel.setBorder(new EmptyBorder(20, 20, 20, 20));
         rulesDialog.getContentPane().add(panel);
     
@@ -173,6 +192,11 @@ public class MainMenu extends JFrame {
         rulesDialog.setVisible(true);
     }
 
+    /**
+     * Open a webpage in the default browser
+     * @param e MouseEvent
+     * @param urls String array of URLs
+     */
     private static void openWebpage(MouseEvent e, String... urls) {
         int linkWidth = 200; // This is an assumed width for each link
         int index = e.getPoint().x / linkWidth;
