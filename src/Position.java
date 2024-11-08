@@ -2,6 +2,11 @@ public class Position {
     protected int row;
     protected int col;
 
+    /**
+     * Create a new Position object
+     * @param row
+     * @param col
+     */
     public Position(int row, int col) {
         this.row = row;
         this.col = col;
