@@ -75,6 +75,11 @@ public class SaveManager {
         }
     }
 
+    /**
+     * Load a game state from an XML file
+     * @param fileName
+     * @return GameStatus object containing the loaded game state or null if an error occurred
+     */
     public static GameStatus loadGame(String fileName) {
         ensureSaveDirectoryExists(); // ensure the save directory exists
 
@@ -120,6 +125,10 @@ public class SaveManager {
         return sb.toString().trim();
     }
 
+    /**
+     * Get a list of available save files
+     * @return List of save file names
+     */
     public static List<String> getAvailableSaves() {
 
         List<String> saveList = new ArrayList<>();

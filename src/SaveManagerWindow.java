@@ -8,16 +8,22 @@ public class SaveManagerWindow extends JDialog {
     private boolean saveConfirmed = false;
     private String saveFileName = null;
 
+    /**
+     * Constructs a SaveManagerWindow dialog for confirming and initiating the game save process.
+     * The dialog presents the user with a confirmation message and buttons for saving or canceling.
+     *
+     * @param parent the parent JFrame to set as the owner of this dialog
+     */
     public SaveManagerWindow(JFrame parent) {
         super(parent, "Save Game", true);
 
-        // Configuration de la fenêtre principale
+        // Main panel configuration
         JPanel panel = new JPanel(new BorderLayout(0, 15));
         panel.setBackground(new Color(30, 30, 30)); // Fond gris très foncé
         panel.setBorder(new EmptyBorder(20, 20, 20, 20)); // Padding de 20 pour toute la fenêtre
         getContentPane().add(panel);
 
-        // Texte principal
+        // Confirmation message
         JLabel label = new JLabel("Do you want to save the current game ?");
         label.setForeground(Color.WHITE);
         label.setHorizontalAlignment(SwingConstants.CENTER);
@@ -32,7 +38,7 @@ public class SaveManagerWindow extends JDialog {
         buttonPanel.add(noButton);
         panel.add(buttonPanel, BorderLayout.SOUTH);
 
-        // Actions des boutons
+        // Button actions listeners
         yesButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 saveConfirmed = true;
@@ -54,7 +60,12 @@ public class SaveManagerWindow extends JDialog {
         setLocationRelativeTo(parent);
     }
 
-
+    /**
+     * Displays an input dialog for the user to enter a name for the save file.
+     * The dialog is modal and requires the user to confirm or cancel the action.
+     *
+     * @return the entered file name as a string, or null if the input is empty
+     */
     private String getFileNameFromUser() {
         JDialog inputDialog = new JDialog(this, "Enter Save File Name", true);
         inputDialog.setSize(400, 220);
