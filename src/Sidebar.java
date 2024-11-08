@@ -11,6 +11,23 @@ public class Sidebar extends JPanel {
     private final Board board;
     private BufferedImage backgroundImage;
 
+    /**
+     * Constructs a Sidebar panel for the Othello game interface, providing buttons for
+     * various game-related functionalities.
+     *
+     * The Sidebar includes the following buttons:
+     * - Save Game: Saves the current game state.
+     * - Reset Game: Resets the board to its initial state.
+     * - Load Game: Loads a previously saved game.
+     * - Main Menu: Navigates back to the main menu and disposes of the current game frame.
+     *
+     * Each button is styled with custom types and has associated action listeners to handle
+     * user interactions. The panel layout is set up using BorderLayout and GridBagLayout
+     * for proper button alignment.
+     *
+     * @param parentFrame the parent JFrame to be referenced for navigation and disposal
+     * @param board the game board object to be used for game operations
+     */
     public Sidebar(JFrame parentFrame, Board board) {
         this.parentFrame = parentFrame;
         this.board = board;
@@ -18,44 +35,48 @@ public class Sidebar extends JPanel {
         ensurePublicExists();
         loadBackgroundImage();
 
-        setLayout(new BorderLayout()); // Utilisation de BorderLayout pour la disposition générale
+        setLayout(new BorderLayout());
 
-        // Panneau pour les boutons
+        // Button panel
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new GridBagLayout());
-        buttonPanel.setOpaque(false); // Garder le panneau transparent pour voir le fond d'écran
+        buttonPanel.setOpaque(false);
 
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.gridwidth = GridBagConstraints.REMAINDER; // Panneau de boutons à la ligne
+        gbc.gridwidth = GridBagConstraints.REMAINDER;
         gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.insets = new Insets(5, 20, 5, 20); // Espacement des boutons
+        gbc.insets = new Insets(5, 20, 5, 20);
 
-        // Création des boutons avec CustomButton
         CustomButton saveButton = new CustomButton("Save Game", CustomButton.ButtonType.GREEN);
         CustomButton resetButton = new CustomButton("Reset Game", CustomButton.ButtonType.DARK_GRAY);
         CustomButton loadButton = new CustomButton("Load Game", CustomButton.ButtonType.GREEN);
         CustomButton mainMenuButton = new CustomButton("Main Menu", CustomButton.ButtonType.DARK_GRAY);
 
-        // Actions des boutons
+        // Button listeners
         saveButton.addActionListener(e -> handleSaveGame());
         loadButton.addActionListener(e -> handleLoadGame());
         resetButton.addActionListener(e -> handleResetGame());
         mainMenuButton.addActionListener(e -> {
-            MainMenu menu = new MainMenu(); // Créez une nouvelle instance du menu principal
-            menu.setVisible(true); // Affiche le menu principal
-            parentFrame.dispose(); // Ferme la fenêtre actuelle (facultatif)
+            MainMenu menu = new MainMenu();
+            menu.setVisible(true);
+            parentFrame.dispose();
         });
 
-        // Ajout des boutons au panneau
         buttonPanel.add(saveButton, gbc);
         buttonPanel.add(resetButton, gbc);
         buttonPanel.add(loadButton, gbc);
         buttonPanel.add(mainMenuButton, gbc);
 
-        // Ajout du panneau de boutons au panneau principal
         add(buttonPanel, BorderLayout.CENTER);
     }
 
+    /**
+     * Handles the save game functionality by displaying a SaveManagerWindow dialog
+     * to prompt the user for a save file name. If a valid file name is provided,
+     * the current game state is saved to the specified file.
+     *
+     * @return true if the game was successfully saved, false if canceled or invalid file name
+     */
     public boolean handleSaveGame() {
         SaveManagerWindow saveWindow = new SaveManagerWindow(parentFrame);
         saveWindow.setVisible(true);
@@ -71,6 +92,11 @@ public class Sidebar extends JPanel {
         return false;
     }
 
+    /**
+     * Handles the load game functionality by displaying a LoadManagerWindow dialog
+     * to prompt the user for a save file to load. If a valid file is selected,
+     * the game state is loaded from the specified file.
+     */
     private void handleLoadGame() {
         LoadManagerWindow loadWindow = new LoadManagerWindow(parentFrame);
         loadWindow.setVisible(true);
@@ -86,6 +112,11 @@ public class Sidebar extends JPanel {
         }
     }
 
+    /**
+     * Handles the reset game functionality by displaying a confirmation dialog
+     * to prompt the user for confirmation before resetting the game board to its
+     * initial state.
+     */
     private void handleResetGame() {
         JDialog confirmDialog = new JDialog(parentFrame, "Reset Game", true);
         confirmDialog.setSize(400, 160);
@@ -131,6 +162,7 @@ public class Sidebar extends JPanel {
         }
     }
 
+    // Helper method to load the background image
     private void loadBackgroundImage() {
         try {
             File imageFile = new File("public/sb_background.jpg");
