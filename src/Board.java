@@ -102,7 +102,7 @@ public class Board extends JPanel {
             Clip clip = AudioSystem.getClip();
             clip.open(audioInputStream);
             clip.start();
-            System.out.println("Sound played with success !");
+            // System.out.println("Sound played with success !");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -245,7 +245,6 @@ public class Board extends JPanel {
         grid.reset();
 
         updateBoard();
-        System.out.println("Le reset a été effectué");
         displayValidMoves();
         updateStatusLabel();
         updatePawnCount();
